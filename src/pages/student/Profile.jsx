@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, GraduationCap, Award, Loader2, Save, CheckCircle2 } from 'lucide-react';
+import { User, Mail, GraduationCap, Award, Loader2, Save, CheckCircle2, Image, X } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 import api from '../../services/api';
 
@@ -9,6 +9,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({
     name: '',
     department: '',
+    profile_picture: '',
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -18,6 +19,7 @@ const Profile = () => {
       setFormData({
         name: user.name || '',
         department: user.department || '',
+        profile_picture: user.profile_picture || '',
       });
     }
   }, [user]);
@@ -58,8 +60,16 @@ const Profile = () => {
           >
             <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-primary/30 to-secondary/30"></div>
             
-            <div className="w-24 h-24 rounded-full bg-surface border-4 border-background flex items-center justify-center text-4xl font-bold text-transparent bg-clip-text bg-premium-gradient z-10 mt-6 shadow-xl">
-              {user?.name?.charAt(0).toUpperCase()}
+            <div className="w-24 h-24 rounded-full bg-surface border-4 border-background flex items-center justify-center text-4xl font-bold text-transparent bg-clip-text bg-premium-gradient z-10 mt-6 shadow-xl overflow-hidden">
+              {user?.profile_picture ? (
+                <img
+                  src={user.profile_picture}
+                  alt={user?.name || 'Profile'}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                user?.name?.charAt(0).toUpperCase()
+              )}
             </div>
             
             <h2 className="text-xl font-bold mt-4 z-10">{user?.name}</h2>
@@ -120,6 +130,47 @@ const Profile = () => {
                     onChange={handleChange}
                     className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all sm:text-sm"
                   />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-xs font-medium text-gray-300 uppercase tracking-wider">Profile Photo URL</label>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="w-20 h-20 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                    {formData.profile_picture ? (
+                      <img
+                        src={formData.profile_picture}
+                        alt="Profile preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Image className="h-7 w-7 text-gray-500" />
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Image className="h-5 w-5 text-gray-500" />
+                      </div>
+                      <input
+                        type="url"
+                        name="profile_picture"
+                        value={formData.profile_picture}
+                        onChange={handleChange}
+                        className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all sm:text-sm"
+                        placeholder="https://example.com/photo.jpg"
+                      />
+                    </div>
+                    {formData.profile_picture && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, profile_picture: '' })}
+                        className="inline-flex items-center gap-1.5 text-xs text-red-300 hover:text-red-200 transition-colors"
+                      >
+                        <X className="w-3.5 h-3.5" /> Remove photo
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
