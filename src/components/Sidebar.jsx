@@ -32,6 +32,7 @@ const Sidebar = () => {
           { name: 'Create Event', path: '/organizer/create-event', icon: PlusCircle },
           { name: 'Manage Events', path: '/organizer/manage', icon: CalendarDays },
           { name: 'Analytics', path: '/organizer/analytics', icon: BarChart3 },
+          { name: 'Profile', path: '/organizer/profile', icon: User },
         ];
       case 'admin':
         return [
@@ -89,8 +90,12 @@ const Sidebar = () => {
 
       <div className="mt-auto border-t border-white/10 pt-4">
         <div className="flex items-center gap-3 px-4 py-3 mb-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white font-bold text-sm">
-            {user?.name?.charAt(0).toUpperCase()}
+          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white font-bold text-sm overflow-hidden">
+            {user?.profile_picture ? (
+              <img src={user.profile_picture} alt={user?.name || 'Profile'} className="w-full h-full object-cover" />
+            ) : (
+              user?.name?.charAt(0).toUpperCase()
+            )}
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-medium text-white">{user?.name}</span>

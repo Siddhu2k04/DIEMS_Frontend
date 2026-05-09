@@ -70,6 +70,7 @@ function App() {
           <Route path="/organizer/create-event" element={<CreateEvent />} />
           <Route path="/organizer/manage" element={<ManageEvents />} />
           <Route path="/organizer/analytics" element={<OrganizerAnalytics />} />
+          <Route path="/organizer/profile" element={<Profile />} />
         </Route>
 
         {/* Admin Routes */}
