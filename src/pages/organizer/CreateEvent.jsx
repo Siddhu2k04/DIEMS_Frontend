@@ -18,6 +18,12 @@ const CreateEvent = () => {
     banner_image: ''
   });
 
+  const getMinDateTime = () => {
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    return new Date(now.getTime() - offset * 60000).toISOString().slice(0, 16);
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -27,13 +33,12 @@ const CreateEvent = () => {
     setLoading(true);
     setError(null);
     try {
-      // Convert datetime-local to ISO string
       const payload = {
         ...formData,
-        date_time: new Date(formData.date_time).toISOString(),
+        date_time: formData.date_time,
         registration_limit: formData.registration_limit ? parseInt(formData.registration_limit) : null
       };
-      
+
       const res = await api.post('/events/', payload);
       navigate('/organizer/manage');
     } catch (err) {
@@ -50,7 +55,7 @@ const CreateEvent = () => {
         <p className="text-gray-400 mt-1">Set up your event details and start accepting registrations.</p>
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-2xl border border-white/5 p-8"
@@ -64,8 +69,8 @@ const CreateEvent = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-300 uppercase tracking-wider">Event Title</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
@@ -77,7 +82,7 @@ const CreateEvent = () => {
 
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-300 uppercase tracking-wider">Description</label>
-            <textarea 
+            <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
@@ -95,12 +100,13 @@ const CreateEvent = () => {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Calendar className="h-5 w-5 text-gray-500" />
                 </div>
-                <input 
-                  type="datetime-local" 
+                <input
+                  type="datetime-local"
                   name="date_time"
                   value={formData.date_time}
                   onChange={handleChange}
                   required
+                  min={getMinDateTime()}
                   className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all [color-scheme:dark]"
                 />
               </div>
@@ -112,8 +118,8 @@ const CreateEvent = () => {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <MapPin className="h-5 w-5 text-gray-500" />
                 </div>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   name="venue"
                   value={formData.venue}
                   onChange={handleChange}
@@ -132,8 +138,8 @@ const CreateEvent = () => {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <AlignLeft className="h-5 w-5 text-gray-500" />
                 </div>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
@@ -149,8 +155,8 @@ const CreateEvent = () => {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Users className="h-5 w-5 text-gray-500" />
                 </div>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   name="registration_limit"
                   value={formData.registration_limit}
                   onChange={handleChange}
@@ -168,8 +174,8 @@ const CreateEvent = () => {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <ImageIcon className="h-5 w-5 text-gray-500" />
               </div>
-              <input 
-                type="url" 
+              <input
+                type="url"
                 name="banner_image"
                 value={formData.banner_image}
                 onChange={handleChange}

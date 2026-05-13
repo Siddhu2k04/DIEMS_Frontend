@@ -78,7 +78,7 @@ const ManageEvents = () => {
     try {
       const payload = {
         ...editForm,
-        date_time: new Date(editForm.date_time).toISOString(),
+        date_time: editForm.date_time,
         registration_limit: editForm.registration_limit ? parseInt(editForm.registration_limit) : null
       };
       await api.put(`/events/${editingEvent.id}`, payload);
@@ -122,7 +122,7 @@ const ManageEvents = () => {
           <h1 className="text-3xl font-display font-bold">Manage Events</h1>
           <p className="text-gray-400 mt-1">View and manage your created events.</p>
         </div>
-        <Link 
+        <Link
           to="/organizer/create-event"
           className="px-6 py-2.5 rounded-xl bg-primary hover:bg-primaryDark text-white font-medium transition-all shadow-lg flex items-center gap-2 text-sm"
         >
@@ -157,11 +157,11 @@ const ManageEvents = () => {
                 </tr>
               ) : (
                 events.map((event, index) => (
-                  <motion.tr 
+                  <motion.tr
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    key={event.id} 
+                    key={event.id}
                     className="border-b border-white/5 hover:bg-white/[0.02] transition-colors"
                   >
                     <td className="p-4 font-medium text-white">{event.title}</td>
@@ -172,11 +172,10 @@ const ManageEvents = () => {
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        event.status === 'upcoming' ? 'bg-primary/20 text-primary border border-primary/30' : 
-                        event.status === 'ongoing' ? 'bg-secondary/20 text-secondary border border-secondary/30' : 
-                        'bg-white/10 text-gray-300'
-                      }`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${event.status === 'upcoming' ? 'bg-primary/20 text-primary border border-primary/30' :
+                          event.status === 'ongoing' ? 'bg-secondary/20 text-secondary border border-secondary/30' :
+                            'bg-white/10 text-gray-300'
+                        }`}>
                         {event.status.toUpperCase()}
                       </span>
                     </td>

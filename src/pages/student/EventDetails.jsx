@@ -13,6 +13,11 @@ const EventDetails = () => {
   const [registrationStatus, setRegistrationStatus] = useState(null); // null, 'success', 'error'
   const [message, setMessage] = useState('');
 
+  const eventDate = event ? new Date(event.date_time) : null;
+  const eventHasPassed = eventDate ? eventDate < new Date() : false;
+  const isEventClosed = eventHasPassed || (event && event.status !== 'upcoming');
+  const eventStatusLabel = isEventClosed ? 'Closed' : (event?.status === 'ongoing' ? 'Ongoing' : 'Upcoming');
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -75,11 +80,16 @@ const EventDetails = () => {
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
-          
+
           <div className="absolute bottom-0 left-0 p-8 w-full">
-            <span className="px-3 py-1 bg-primary/20 text-primary border border-primary/30 rounded-full text-xs font-medium mb-4 inline-block backdrop-blur-sm">
-              {event.category || 'General'}
-            </span>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className={`px-3 py-1 rounded-full text-xs font-medium inline-block backdrop-blur-sm ${isEventClosed ? 'bg-danger/20 text-red-200 border border-danger/50' : 'bg-primary/20 text-primary border border-primary/30'}`}>
+                {eventStatusLabel}
+              </span>
+              <span className="px-3 py-1 rounded-full text-xs font-medium inline-block bg-white/5 text-white border border-white/10">
+                {event.category || 'General'}
+              </span>
+            </div>
             <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-2">{event.title}</h1>
             <p className="text-gray-300">Organized by {event.organizer_name}</p>
           </div>
@@ -136,8 +146,13 @@ const EventDetails = () => {
               </div>
 
               <div className="pt-6 border-t border-white/10">
+                {eventHasPassed && (
+                  <div className="mb-4 text-sm font-semibold text-red-100 bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
+                    This event is closed because the scheduled time has passed.
+                  </div>
+                )}
                 {registrationStatus === 'success' ? (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="bg-success/20 border border-success/50 p-4 rounded-xl flex items-start gap-3"
@@ -160,10 +175,10 @@ const EventDetails = () => {
                     )}
                     <button
                       onClick={handleRegister}
-                      disabled={registering || event.status !== 'upcoming'}
+                      disabled={registering || isEventClosed}
                       className="w-full py-3.5 rounded-xl bg-primary hover:bg-primaryDark text-white font-medium transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                     >
-                      {registering ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Register Now'}
+                      {registering ? <Loader2 className="w-5 h-5 animate-spin" /> : isEventClosed ? 'Event Closed' : 'Register Now'}
                     </button>
                   </>
                 )}
